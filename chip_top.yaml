@@ -181,7 +181,7 @@ PAD_EAST: [
 ]
 
 PAD_NORTH: [
-    trigger.pad,
+    trigger_pad,
     
     "dvss_pads\\[4\\].pad",
     "dvdd_pads\\[4\\].pad",
