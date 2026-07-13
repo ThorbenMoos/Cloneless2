@@ -181,7 +181,7 @@ module chip_top (
     end
     endgenerate
 	
-	gf180mcu_fd_io__bi_24t pad (
+	gf180mcu_fd_io__bi_24t trigger_pad (
 		`ifdef USE_POWER_PINS
 		.DVDD   (VDD),
 		.DVSS   (VSS),
