@@ -13,6 +13,9 @@ GHDL_SIM_FLAGS = --stop-time=10us --ieee-asserts=disable-at-0
 PDK_ROOT ?= $(MAKEFILE_DIR)/gf180mcu
 PDK ?= gf180mcuD
 PDK_COMMIT ?= d658698bd8bcf4e05fc7b5991a701247ba0d744c
+PRECHECK_ROOT = $(MAKEFILE_DIR)/gf180mcu-precheck
+PRECHECK_TAG = 1.7.3
+ID = G802CLON
 
 all: clean analyze sim convert sim_converted clone_pdk sim_with_io cell_replacement build_macros erase_macro_rtl build_design sim_postlayout waferspace_precheck
 
@@ -98,3 +101,7 @@ build_design:
 sim_postlayout:	
 	iverilog -o $(TESTBENCHPATH)/$(IOTOPTESTBENCH) $(PDK_ROOT)/$(PDK)/libs.ref/gf180mcu_fd_sc_mcu7t5v0/verilog/gf180mcu_fd_sc_mcu7t5v0.v $(PDK_ROOT)/$(PDK)/libs.ref/gf180mcu_fd_sc_mcu7t5v0/verilog/primitives.v $(PDK_ROOT)/$(PDK)/libs.ref/gf180mcu_fd_io/verilog/gf180mcu_fd_io.v $(MACROPATH)/gf180mcu_ws_ip__logo/vh/gf180mcu_ws_ip__logo.v $(MACROPATH)/gf180mcu_ws_ip__marker/vh/gf180mcu_ws_ip__marker.v $(MACROPATH)/gf180mcu_ws_ip__project_id/vh/gf180mcu_ws_ip__project_id.v $(MACROPATH)/gf180mcu_ws_ip__qrcode_id/vh/gf180mcu_ws_ip__qrcode_id.v $(MACROPATH)/gf180mcu_ws_ip__shuttle_id/vh/gf180mcu_ws_ip__shuttle_id.v $(MACROPATH)/butterfly/runs/RUN*/final/vh/butterfly.vh $(MACROPATH) $(MACROPATH)/ringoscillator_11/runs/RUN*/final/vh/ringoscillator_11.vh $(MACROPATH)/ringoscillator_23/runs/RUN*/final/vh/ringoscillator_23.vh $(MACROPATH)/ringoscillator_31/runs/RUN*/final/vh/ringoscillator_31.vh $(MACROPATH)/ringoscillator_47/runs/RUN*/final/vh/ringoscillator_47.vh $(MACROPATH)/ringoscillator_59/runs/RUN*/final/vh/ringoscillator_59.vh $(MACROPATH)/tappeddelaychain/runs/RUN*/final/vh/tappeddelaychain.vh $(MAKEFILE_DIR)/runs/RUN*/final/nl/$(IOTOPLEVEL).nl.v $(TESTBENCHPATH)/$(IOTOPTESTBENCH).v
 	vvp $(TESTBENCHPATH)/$(IOTOPTESTBENCH)
+
+waferspace_precheck:
+	git clone https://github.com/wafer-space/gf180mcu-precheck --branch $(PRECHECK_TAG)
+	python3 $(PRECHECK_ROOT)/precheck.py --input runs/RUN*/final/gds/$(IOTOPLEVEL).gds --top $(IOTOPLEVEL) --id $(ID)

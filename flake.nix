@@ -64,6 +64,19 @@
               gtkwave
               surfer
             ];
+
+            extra-python-packages =
+              ps: with ps; [
+                # Verification
+                cocotb
+
+                # For KLayout Python DRC runner
+                docopt
+
+                # For logo generation
+				qrcode
+                pillow
+              ];
           });
         }
       );
