@@ -6,7 +6,7 @@ Cloneless2 brings several technical novelties. Concrete scientific details are r
 - The protected block cipher implementation now satisfies provable glitch+transition-robust probing security that can be formally verified using state-of-the-art toolchains. This is a stronger security guarantee than the (non-verified beyond squaring gadget) glitch-robustness of Cloneless1.
 - Existing ES-TRNG and RO-PUF instances have been tuned based on first measurement results from Cloneless1 silicon. For the TRNGs, the carry4-based tapped delay chain for jitter sampling has been completely replaced by a buffer-based one to achieve higher resolution measurements.
 - A new family of PUF cells has been introduced for key storage and characterization, namely butterfly PUFs constructed from two cross-coupled latches per cell. Their design principle with automated routing and placement relies on assumptions regarding low-level cell properties that remain to be verified in silicon.
-- For convience of practical security evaluation, a trigger signal has been routed to an IO cell. Additionally, a second hard-coded key has been integrated for selection to enable clean fixed-vs-fixed key measurements.
+- For convience of practical security evaluation, a trigger signal has been routed to an IO cell. Additionally, a second hard-coded key has been integrated for selection to enable clean fixed-vs-fixed key measurements.  
 
 ![A KLayout screenshot of the Cloneless2 ASIC](layout.png)
 
