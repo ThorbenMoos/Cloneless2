@@ -1,5 +1,5 @@
 # Cloneless2
-Cloneless2 is the second in a series of tamper-resistant cryptographic open-source silicon designs, following its predecessor [Cloneless1](https://github.com/ThorbenMoos/Cloneless1). It is built from GlobalFoundries' 180nm open-source PDK [GF180MCU](https://gf180mcu-pdk.readthedocs.io/en/latest), the [wafer.space](https://wafer.space) [project template](https://github.com/wafer-space/gf180mcu-project-template) and is being manufactured via [wafer.space GF180MCU Run 2](https://www.crowdsupply.com/wafer-space/gf180mcu-run-2). The Cloneless2 ASIC has been designed using the [librelane](https://librelane.readthedocs.io/en/latest) EDA tool flow and can be fully and easily reproduced from the sources and scripts provided in this repository.
+Cloneless2 is the second in a series of tamper-resistant cryptographic open-source silicon designs, following its predecessor [Cloneless1](https://github.com/ThorbenMoos/Cloneless1). It is implemented using GlobalFoundries' 180nm open-source PDK [GF180MCU](https://gf180mcu-pdk.readthedocs.io/en/latest), the [wafer.space](https://wafer.space) [project template](https://github.com/wafer-space/gf180mcu-project-template) and is being manufactured via [wafer.space GF180MCU Run 2](https://www.crowdsupply.com/wafer-space/gf180mcu-run-2). The Cloneless2 ASIC has been designed using the [librelane](https://librelane.readthedocs.io/en/latest) EDA tool flow and can be fully and easily reproduced from the sources and scripts provided in this repository.
 
 ![A KLayout screenshot of the Cloneless2 ASIC](layout.png)
 
@@ -8,7 +8,7 @@ Cloneless2 brings several technical novelties. Concrete scientific details are r
 - The protected block cipher implementation now satisfies provable glitch+transition-robust probing security that can be formally verified using state-of-the-art toolchains. This is a stronger security guarantee than the (non-verified beyond squaring gadget) glitch-robustness of Cloneless1.
 - Existing ES-TRNG and RO-PUF instances have been tuned based on first measurement results from Cloneless1 silicon. For the TRNGs, the carry4-based tapped delay chain for jitter sampling has been completely replaced by a buffer-based one to achieve higher resolution measurements.
 - A new family of PUF cells has been introduced for key storage and characterization, namely butterfly PUFs constructed from two cross-coupled latches per cell. Their design principle with automated routing and placement relies on assumptions regarding low-level cell properties that remain to be verified in silicon.
-- For convience of practical security evaluation, a trigger signal has been routed to an IO cell. Additionally, a second hard-coded key has been integrated for selection to enable clean fixed-vs-fixed key measurements.
+- For convenience of practical security evaluation, a trigger signal has been routed to an IO cell. Additionally, a second hard-coded key has been integrated to enable cleaner fixed-vs-fixed key SCA measurements.
 
 ## (Re-)Producing the Chip Design
 After cloning the repository (```git clone https://github.com/ThorbenMoos/Cloneless2```) and performing a short environment setup, (re-)producing the entire chip design with all its intermediate stages and files should be as easy as a single call to the Makefile. To have that work, make sure to install [ghdl](https://github.com/ghdl/ghdl), [iverilog (Icarus Verilog)](https://github.com/steveicarus/iverilog), the make utility and the [nix](https://github.com/NixOS/nix) package manager. On Ubuntu Server 26.04 LTS the following commands have been tested for installing these utilities:
@@ -17,7 +17,7 @@ After cloning the repository (```git clone https://github.com/ThorbenMoos/Clonel
 sudo apt update
 sudo apt install -y ghdl
 sudo apt install -y verilog
-sudo apt install -y build-essential
+sudo apt install -y make
 curl --proto '=https' --tlsv1.2 -fsSL https://artifacts.nixos.org/nix-installer | sh -s -- install --no-confirm --extra-conf "
     extra-substituters = https://nix-cache.fossi-foundation.org
     extra-trusted-public-keys = nix-cache.fossi-foundation.org:3+K59iFwXqKsL7BNu6Guy0v+uTlwsxYQxjspXzqLYQs=
@@ -26,9 +26,9 @@ curl --proto '=https' --tlsv1.2 -fsSL https://artifacts.nixos.org/nix-installer 
 . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 ```
 
-Once these steps are completed, ```nix-shell``` can be opened in the main directory of this repository. Inside the shell simply call ```make all``` and wait for the result. The Makefile verifies testbenches, converts the sources, clones the PDK and executes the librelane flow, first to pre-harden some macros and then to implement the overall chip design. Finally, the [wafer.space precheck](https://github.com/wafer-space/gf180mcu-precheck is executed to complete the sign-off procedure and confirm manufacturability. On a 16-core machine with 32 GB memory, the overall runtime should be 12-13 hours, about 5:30h for the initial flow and 7h for the precheck. If everything goes well, the design should pass all testbenches as well as the Antenna, DRC and LVS checks, both in the initial flow and the precheck.
+Once these steps are completed, ```nix-shell``` can be opened in the main directory of this repository. Inside the shell simply call ```make all``` and wait for the result. The Makefile verifies testbenches, converts the sources, clones the PDK and executes the librelane flow, first to pre-harden some macros and then to implement the overall chip design. Finally, the [wafer.space precheck](https://github.com/wafer-space/gf180mcu-precheck) is executed to complete the sign-off procedure and confirm manufacturability. On a 16-core machine with 32 GB RAM, the overall runtime should be 12-13 hours, about 5:30h for the initial flow and 7h for the precheck. If everything goes well, the design should pass all testbenches as well as the Antenna, DRC and LVS checks, both in the initial flow and the precheck.
 
-For reference you may download the [final GDS](https://thorbenmoos.de/Cloneless2.gds.zip) (zip, 53 MB) and [postlayout netlist](https://thorbenmoos.de/Cloneless2.nl.v.zip) (zip, 7 MB) here to compare your results against. KLayout Diff/XOR should report no differences between the provided GDS file and the one produced by the flow described above. Careful, regular checksums are not adequate for comparing GDS files.
+For reference you may download the [final GDS](https://thorbenmoos.de/Cloneless2.gds.zip) (zip, 53 MB) and [postlayout netlist](https://thorbenmoos.de/Cloneless2.nl.v.zip) (zip, 7 MB) here to compare your results against. KLayout Diff/XOR should report no differences between the provided GDS file and the one produced by the flow described above. Be careful, regular checksums are not adequate to compare GDS files for equality due to artifacts like timestamps in the format.
 
 ## RTL Design
 The RTL design is fully written in VHDL, all sources are located in the ```src``` folder. Many high-level modules make use of generics to keep the designs parametrizable and useful beyond their concrete instantiation in this project. Conversion from VHDL to Verilog for compatibility with the EDA tool is performed with ghdl.
