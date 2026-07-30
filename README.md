@@ -1,11 +1,15 @@
 # Cloneless2
 Cloneless2 is the second in a series of tamper-resistant cryptographic open-source silicon designs, following its predecessor [Cloneless1](https://github.com/ThorbenMoos/Cloneless1). It is implemented using GlobalFoundries' 180nm open-source PDK [GF180MCU](https://gf180mcu-pdk.readthedocs.io/en/latest), the [wafer.space](https://wafer.space) [project template](https://github.com/wafer-space/gf180mcu-project-template) and is being manufactured via [wafer.space GF180MCU Run 2](https://www.crowdsupply.com/wafer-space/gf180mcu-run-2). The Cloneless2 ASIC has been designed using the [librelane](https://librelane.readthedocs.io/en/latest) EDA tool flow and can be fully and easily reproduced from the sources and scripts provided in this repository.
 
+Important external links:
+- [Cloneless_artifacts](https://github.com/ThorbenMoos/Cloneless_artifacts)
+- [Cloneless1](https://github.com/ThorbenMoos/Cloneless1)
+
 ![A KLayout screenshot of the Cloneless2 ASIC](layout.png)
 
 ## Updates since Cloneless1
 Cloneless2 brings several technical novelties. Concrete scientific details are referenced further down this document, this is a high-level overview:
-- The protected block cipher implementation now satisfies provable glitch+transition-robust probing security that can be formally verified using state-of-the-art toolchains. This is a stronger security guarantee than the (non-verified beyond squaring gadget) glitch-robustness of Cloneless1.
+- The protected block cipher implementation now satisfies provable glitch+transition-robust probing security that can be [formally verified using state-of-the-art toolchains](https://github.com/ThorbenMoos/Cloneless_artifacts/tree/main/Formal_verification). This is a stronger security guarantee than the (non-verified) glitch-robustness of Cloneless1.
 - Existing ES-TRNG and RO-PUF instances have been tuned based on first measurement results from Cloneless1 silicon. For the TRNGs, the carry4-based tapped delay chain for jitter sampling has been completely replaced by a buffer-based one to achieve higher resolution measurements.
 - A new family of PUF cells has been introduced for key storage and characterization, namely butterfly PUFs constructed from two cross-coupled latches per cell. Their design principle with automated routing and placement relies on assumptions regarding low-level cell properties that remain to be verified in silicon.
 - For convenience of practical security evaluation, a trigger signal has been routed to an IO cell. Additionally, a second hard-coded key has been integrated to enable cleaner fixed-vs-fixed key SCA measurements.
